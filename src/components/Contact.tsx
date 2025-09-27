@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, Github, Linkedin, MessageCircle, Download, CheckCircle, AlertCircle } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -21,11 +22,7 @@ const Contact = () => {
 
   // CV Download Handler
   const handleCVDownload = () => {
-    // Option 1: Direct file download (if CV is in public folder)
-    // Place your CV file in the public folder (e.g., public/cv/bacem-ben-akkari-cv.pdf)
-    const cvUrl = '/cv/bacem-ben-akkari-cv.pdf';
-    
-    // Create a temporary anchor element and trigger download
+    const cvUrl = '/my_cv.pdf';
     const link = document.createElement('a');
     link.href = cvUrl;
     link.download = 'Bacem-Ben-Akkari-CV.pdf'; // Filename for download
@@ -34,107 +31,17 @@ const Contact = () => {
     document.body.removeChild(link);
   };
 
-  // Alternative CV Download Handler (for external URL)
-  const handleCVDownloadExternal = () => {
-    // Option 2: If CV is hosted externally (Google Drive, Dropbox, etc.)
-    const externalCvUrl = 'https://your-external-cv-url.com/cv.pdf';
-    window.open(externalCvUrl, '_blank');
-  };
-
-  // Alternative CV Download Handler (for base64 embedded CV)
-  const handleCVDownloadEmbedded = () => {
-    // Option 3: If you want to embed CV as base64 (not recommended for large files)
-    const cvContent = `
-      %PDF-1.4
-      1 0 obj
-      <<
-      /Type /Catalog
-      /Pages 2 0 R
-      >>
-      endobj
-      2 0 obj
-      <<
-      /Type /Pages
-      /Kids [3 0 R]
-      /Count 1
-      >>
-      endobj
-      3 0 obj
-      <<
-      /Type /Page
-      /Parent 2 0 R
-      /MediaBox [0 0 612 792]
-      /Contents 4 0 R
-      /Resources <<
-        /Font <<
-          /F1 5 0 R
-        >>
-      >>
-      >>
-      endobj
-      4 0 obj
-      <<
-      /Length 44
-      >>
-      stream
-      BT
-      /F1 12 Tf
-      100 700 Td
-      (Bacem Ben Akkari - CV) Tj
-      ET
-      endstream
-      endobj
-      5 0 obj
-      <<
-      /Type /Font
-      /Subtype /Type1
-      /BaseFont /Helvetica
-      >>
-      endobj
-      xref
-      0 6
-      0000000000 65535 f 
-      0000000009 00000 n 
-      0000000058 00000 n 
-      0000000115 00000 n 
-      0000000274 00000 n 
-      0000000373 00000 n 
-      trailer
-      <<
-      /Size 6
-      /Root 1 0 R
-      >>
-      startxref
-      459
-      %%EOF`;
-    
-    const blob = new Blob([cvContent], { type: 'application/pdf' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'Bacem-Ben-Akkari-CV.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-  };
-
   // EmailJS Integration (Recommended for form)
   const handleEmailJSSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitStatus('loading');
 
     try {
-      // You'll need to install emailjs: npm install @emailjs/browser
-      // Then import: import emailjs from '@emailjs/browser';
-      
-      // Replace these with your actual EmailJS credentials
-      const serviceId = 'your_service_id';
-      const templateId = 'your_template_id';
+      // EmailJS configuration - Replace with your actual credentials
+      const serviceId = 'service_your_id';
+      const templateId = 'template_your_id';
       const publicKey = 'your_public_key';
 
-      // Uncomment and use this when you have EmailJS set up:
-      /*
       const result = await emailjs.send(
         serviceId,
         templateId,
@@ -143,14 +50,12 @@ const Contact = () => {
           from_email: formData.email,
           subject: formData.subject,
           message: formData.message,
-          to_email: 'bacem.benakkari@polytechnicien.tn'
+          to_name: 'Bacem Ben Akkari',
+          to_email: 'bacem.benakkari@polytechnicien.tn',
+          reply_to: formData.email
         },
         publicKey
       );
-      */
-
-      // Simulate EmailJS success for demo
-      await new Promise(resolve => setTimeout(resolve, 1000));
       
       setSubmitStatus('success');
       setStatusMessage('Message envoyé avec succès! Je vous répondrai bientôt.');
@@ -166,60 +71,7 @@ const Contact = () => {
     }, 5000);
   };
 
-  // Mailto fallback
-  const handleMailtoSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const { name, email, subject, message } = formData;
-    const body = `Nom: ${name}\nEmail: ${email}\n\nMessage:\n${message}`;
-    const mailtoLink = `mailto:bacem.benakkari@polytechnicien.tn?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
-    window.location.href = mailtoLink;
-    
-    setSubmitStatus('success');
-    setStatusMessage('Votre client email va s\'ouvrir. Envoyez le message depuis votre application email.');
-    
-    setTimeout(() => {
-      setSubmitStatus('idle');
-      setStatusMessage('');
-    }, 5000);
-  };
-
-  // Backend API submission
-  const handleAPISubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitStatus('loading');
-
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const result = await response.json();
-      setSubmitStatus('success');
-      setStatusMessage('Message envoyé avec succès!');
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    } catch (error) {
-      setSubmitStatus('error');
-      setStatusMessage('Erreur lors de l\'envoi. Veuillez réessayer.');
-    }
-
-    setTimeout(() => {
-      setSubmitStatus('idle');
-      setStatusMessage('');
-    }, 5000);
-  };
-
-  // Choose which submit handler to use
-  const handleSubmit = handleMailtoSubmit; // Change this to your preferred method
+  const handleSubmit = handleEmailJSSubmit;
 
   const contactInfo = [
     {

@@ -8,6 +8,15 @@ const Hero = () => {
     element?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleCVDownload = () => {
+    // Create a link element and trigger download
+    const link = document.createElement('a');
+    link.href = '/my_cv.pdf';
+    link.download = 'Bacem-Ben-Akkari-CV.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-teal-700 text-white">
       {/* Background Pattern */}
@@ -62,7 +71,10 @@ const Hero = () => {
           >
             Me Contacter
           </button>
-          <button className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-blue-900 transition-all duration-300 flex items-center space-x-2">
+          <button 
+            onClick={handleCVDownload}
+            className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-blue-900 transition-all duration-300 flex items-center space-x-2"
+          >
             <Download size={18} />
             <span>Télécharger CV</span>
           </button>
