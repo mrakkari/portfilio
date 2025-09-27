@@ -9,7 +9,8 @@ const Certifications = () => {
       type: "Langue",
       description: "Certification officielle de français langue étrangère niveau B2, attestant d'un niveau avancé en français.",
       color: "blue",
-      verified: true
+      verified: true,
+      certificateUrl: "https://example.com/delf-b2-certificate"
     },
     {
       name: "The Machine Learning Algorithms A-Z",
@@ -17,7 +18,8 @@ const Certifications = () => {
       type: "Machine Learning",
       description: "Certification complète sur les algorithmes de machine learning et leur implémentation pratique.",
       color: "teal",
-      verified: true
+      verified: true,
+      certificateUrl: "https://learn.365datascience.com/certificates/CC-30EDE9CBF6/"
     },
     {
       name: "Web Scraping and API Fundamentals in Python",
@@ -25,7 +27,8 @@ const Certifications = () => {
       type: "Python",
       description: "Maîtrise des techniques de web scraping et utilisation d'APIs avec Python.",
       color: "orange",
-      verified: true
+      verified: true,
+      certificateUrl: "https://learn.365datascience.com/certificates/CC-7EAE0B5B03/"
     },
     {
       name: "Certified Database Specialist",
@@ -33,7 +36,8 @@ const Certifications = () => {
       type: "Bases de données",
       description: "Certification officielle attestant des compétences avancées en gestion de bases de données.",
       color: "purple",
-      verified: true
+      verified: true,
+      certificateUrl: "https://www.credly.com/badges/ec6a32b8-5225-43b6-8bce-a36b8b667225/linked_in?t=seynip"
     },
     {
       name: "Cisco Certified Network Associate 1",
@@ -41,7 +45,8 @@ const Certifications = () => {
       type: "Réseau",
       description: "Première certification Cisco CCNA couvrant les fondamentaux des réseaux informatiques.",
       color: "green",
-      verified: true
+      verified: true,
+      certificateUrl: "https://example.com/ccna-1-certificate"
     },
     {
       name: "Cisco Certified Network Associate 2",
@@ -49,7 +54,8 @@ const Certifications = () => {
       type: "Réseau",
       description: "Deuxième certification Cisco CCNA approfondissant les concepts de routage et commutation.",
       color: "red",
-      verified: true
+      verified: true,
+      certificateUrl: "https://example.com/ccna-2-certificate"
     }
   ];
 
@@ -141,10 +147,15 @@ const Certifications = () => {
                       )}
                     </div>
                     
-                    <button className={`flex items-center space-x-1 text-xs ${colors.text} hover:opacity-80 transition-opacity`}>
+                    <a
+                      href={cert.certificateUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex items-center space-x-1 text-xs ${colors.text} hover:opacity-80 transition-opacity`}
+                    >
                       <span>Voir certificat</span>
                       <ExternalLink size={12} />
-                    </button>
+                    </a>
                   </div>
                 </div>
               </div>

@@ -18,7 +18,8 @@ const Experience = () => {
         "Gestion complète du cycle de recrutement"
       ],
       color: "blue",
-      icon: Globe
+      icon: Globe,
+      githubUrl: "https://github.com/bacembenakkari/TalentCloud"
     },
     {
       position: "Module de contrôle à distance par téléphone pour les étudiants",
@@ -35,7 +36,8 @@ const Experience = () => {
         "Intégration avec systèmes éducatifs existants"
       ],
       color: "teal",
-      icon: Code
+      icon: Code,
+      githubUrl: "https://github.com/bacembenakkari/student-phone-control"
     },
     {
       position: "Stage réseau et connectivité",
@@ -151,6 +153,19 @@ const Experience = () => {
                           </span>
                         ))}
                       </div>
+
+                      {/* GitHub Button (only for first two experiences) */}
+                      {exp.githubUrl && (
+                        <a
+                          href={exp.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`mt-4 inline-flex items-center space-x-2 px-4 py-2 ${colors.bg} text-white rounded-lg hover:opacity-90 transition-opacity text-sm font-medium`}
+                        >
+                          <Code size={16} />
+                          <span>Code Source</span>
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>

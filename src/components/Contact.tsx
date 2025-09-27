@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, Github, Linkedin, MessageCircle, Download } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Github, Linkedin, MessageCircle, Download, CheckCircle, AlertCircle } from 'lucide-react';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +9,9 @@ const Contact = () => {
     message: ''
   });
 
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [statusMessage, setStatusMessage] = useState('');
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
@@ -16,11 +19,207 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', formData);
+  // CV Download Handler
+  const handleCVDownload = () => {
+    // Option 1: Direct file download (if CV is in public folder)
+    // Place your CV file in the public folder (e.g., public/cv/bacem-ben-akkari-cv.pdf)
+    const cvUrl = '/cv/bacem-ben-akkari-cv.pdf';
+    
+    // Create a temporary anchor element and trigger download
+    const link = document.createElement('a');
+    link.href = cvUrl;
+    link.download = 'Bacem-Ben-Akkari-CV.pdf'; // Filename for download
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
+
+  // Alternative CV Download Handler (for external URL)
+  const handleCVDownloadExternal = () => {
+    // Option 2: If CV is hosted externally (Google Drive, Dropbox, etc.)
+    const externalCvUrl = 'https://your-external-cv-url.com/cv.pdf';
+    window.open(externalCvUrl, '_blank');
+  };
+
+  // Alternative CV Download Handler (for base64 embedded CV)
+  const handleCVDownloadEmbedded = () => {
+    // Option 3: If you want to embed CV as base64 (not recommended for large files)
+    const cvContent = `
+      %PDF-1.4
+      1 0 obj
+      <<
+      /Type /Catalog
+      /Pages 2 0 R
+      >>
+      endobj
+      2 0 obj
+      <<
+      /Type /Pages
+      /Kids [3 0 R]
+      /Count 1
+      >>
+      endobj
+      3 0 obj
+      <<
+      /Type /Page
+      /Parent 2 0 R
+      /MediaBox [0 0 612 792]
+      /Contents 4 0 R
+      /Resources <<
+        /Font <<
+          /F1 5 0 R
+        >>
+      >>
+      >>
+      endobj
+      4 0 obj
+      <<
+      /Length 44
+      >>
+      stream
+      BT
+      /F1 12 Tf
+      100 700 Td
+      (Bacem Ben Akkari - CV) Tj
+      ET
+      endstream
+      endobj
+      5 0 obj
+      <<
+      /Type /Font
+      /Subtype /Type1
+      /BaseFont /Helvetica
+      >>
+      endobj
+      xref
+      0 6
+      0000000000 65535 f 
+      0000000009 00000 n 
+      0000000058 00000 n 
+      0000000115 00000 n 
+      0000000274 00000 n 
+      0000000373 00000 n 
+      trailer
+      <<
+      /Size 6
+      /Root 1 0 R
+      >>
+      startxref
+      459
+      %%EOF`;
+    
+    const blob = new Blob([cvContent], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'Bacem-Ben-Akkari-CV.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
+  // EmailJS Integration (Recommended for form)
+  const handleEmailJSSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitStatus('loading');
+
+    try {
+      // You'll need to install emailjs: npm install @emailjs/browser
+      // Then import: import emailjs from '@emailjs/browser';
+      
+      // Replace these with your actual EmailJS credentials
+      const serviceId = 'your_service_id';
+      const templateId = 'your_template_id';
+      const publicKey = 'your_public_key';
+
+      // Uncomment and use this when you have EmailJS set up:
+      /*
+      const result = await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          to_email: 'bacem.benakkari@polytechnicien.tn'
+        },
+        publicKey
+      );
+      */
+
+      // Simulate EmailJS success for demo
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setSubmitStatus('success');
+      setStatusMessage('Message envoyé avec succès! Je vous répondrai bientôt.');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (error) {
+      setSubmitStatus('error');
+      setStatusMessage('Erreur lors de l\'envoi. Veuillez réessayer.');
+    }
+
+    setTimeout(() => {
+      setSubmitStatus('idle');
+      setStatusMessage('');
+    }, 5000);
+  };
+
+  // Mailto fallback
+  const handleMailtoSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const { name, email, subject, message } = formData;
+    const body = `Nom: ${name}\nEmail: ${email}\n\nMessage:\n${message}`;
+    const mailtoLink = `mailto:bacem.benakkari@polytechnicien.tn?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    window.location.href = mailtoLink;
+    
+    setSubmitStatus('success');
+    setStatusMessage('Votre client email va s\'ouvrir. Envoyez le message depuis votre application email.');
+    
+    setTimeout(() => {
+      setSubmitStatus('idle');
+      setStatusMessage('');
+    }, 5000);
+  };
+
+  // Backend API submission
+  const handleAPISubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitStatus('loading');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const result = await response.json();
+      setSubmitStatus('success');
+      setStatusMessage('Message envoyé avec succès!');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (error) {
+      setSubmitStatus('error');
+      setStatusMessage('Erreur lors de l\'envoi. Veuillez réessayer.');
+    }
+
+    setTimeout(() => {
+      setSubmitStatus('idle');
+      setStatusMessage('');
+    }, 5000);
+  };
+
+  // Choose which submit handler to use
+  const handleSubmit = handleMailtoSubmit; // Change this to your preferred method
 
   const contactInfo = [
     {
@@ -51,27 +250,17 @@ const Contact = () => {
       icon: Github,
       label: "GitHub",
       username: "@bacembenakkari",
-      url: "#",
+      url: "https://github.com/bacembenakkari", // Replace with actual URL
       color: "gray"
     },
     {
       icon: Linkedin,
       label: "LinkedIn",
       username: "@bacembenakkari",
-      url: "#",
+      url: "https://linkedin.com/in/bacembenakkari", // Replace with actual URL
       color: "blue"
     }
   ];
-
-  const getColorClasses = (color: string) => {
-    const colorMap = {
-      blue: { bg: 'bg-blue-500', light: 'bg-blue-50', text: 'text-blue-600', hover: 'hover:bg-blue-600' },
-      teal: { bg: 'bg-teal-500', light: 'bg-teal-50', text: 'text-teal-600', hover: 'hover:bg-teal-600' },
-      orange: { bg: 'bg-orange-500', light: 'bg-orange-50', text: 'text-orange-600', hover: 'hover:bg-orange-600' },
-      gray: { bg: 'bg-gray-800', light: 'bg-gray-50', text: 'text-gray-600', hover: 'hover:bg-gray-900' }
-    };
-    return colorMap[color as keyof typeof colorMap];
-  };
 
   return (
     <section id="contact" className="py-20 bg-white">
@@ -121,6 +310,8 @@ const Contact = () => {
                     <a
                       key={index}
                       href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center hover:bg-white/30 transition-colors"
                     >
                       <social.icon className="w-5 h-5" />
@@ -130,7 +321,10 @@ const Contact = () => {
               </div>
 
               <div className="mt-8 pt-8 border-t border-white/20">
-                <button className="w-full bg-white text-blue-600 py-3 px-4 rounded-lg font-semibold hover:bg-blue-50 transition-colors flex items-center justify-center space-x-2">
+                <button 
+                  onClick={handleCVDownload}
+                  className="w-full bg-white text-blue-600 py-3 px-4 rounded-lg font-semibold hover:bg-blue-50 transition-colors flex items-center justify-center space-x-2 active:scale-95 transform duration-150"
+                >
                   <Download size={18} />
                   <span>Télécharger CV</span>
                 </button>
@@ -146,6 +340,22 @@ const Contact = () => {
                 <h3 className="text-2xl font-bold text-gray-900">Envoyez-moi un message</h3>
               </div>
 
+              {/* Status Message */}
+              {statusMessage && (
+                <div className={`mb-6 p-4 rounded-lg flex items-center space-x-3 ${
+                  submitStatus === 'success' 
+                    ? 'bg-green-50 text-green-700 border border-green-200' 
+                    : 'bg-red-50 text-red-700 border border-red-200'
+                }`}>
+                  {submitStatus === 'success' ? (
+                    <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                  ) : (
+                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                  )}
+                  <span>{statusMessage}</span>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
@@ -159,7 +369,8 @@ const Contact = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      disabled={submitStatus === 'loading'}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="Votre nom"
                     />
                   </div>
@@ -175,7 +386,8 @@ const Contact = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      disabled={submitStatus === 'loading'}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="votre@email.com"
                     />
                   </div>
@@ -192,7 +404,8 @@ const Contact = () => {
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    disabled={submitStatus === 'loading'}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="Sujet de votre message"
                   />
                 </div>
@@ -208,17 +421,21 @@ const Contact = () => {
                     onChange={handleChange}
                     required
                     rows={6}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                    disabled={submitStatus === 'loading'}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="Votre message..."
                   ></textarea>
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-blue-600 to-teal-600 text-white py-4 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center space-x-2"
+                  disabled={submitStatus === 'loading'}
+                  className="w-full bg-gradient-to-r from-blue-600 to-teal-600 text-white py-4 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
-                  <Send size={20} />
-                  <span>Envoyer le message</span>
+                  <Send size={20} className={submitStatus === 'loading' ? 'animate-pulse' : ''} />
+                  <span>
+                    {submitStatus === 'loading' ? 'Envoi en cours...' : 'Envoyer le message'}
+                  </span>
                 </button>
               </form>
             </div>

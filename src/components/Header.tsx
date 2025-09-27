@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Github, Linkedin, Mail, Phone } from 'lucide-react';
+import bacemPhoto from '../assets/bacem.jpg'; // adjust the path if needed
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -36,9 +37,10 @@ const Header = () => {
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
+          {/* Logo and Name */}
           <div className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-teal-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">B</span>
+            <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
+              <img src={bacemPhoto} alt="Bacem Ben Akkari" className="w-full h-full object-cover" />
             </div>
             <span className={`font-bold text-xl transition-colors ${
               isScrolled ? 'text-gray-900' : 'text-white'
@@ -74,12 +76,12 @@ const Header = () => {
             }`}>
               <Phone size={20} />
             </a>
-            <a href="#" className={`transition-colors hover:text-blue-600 ${
+            <a href="https://github.com/bacembenakkari" target="_blank" rel="noopener noreferrer" className={`transition-colors hover:text-blue-600 ${
               isScrolled ? 'text-gray-700' : 'text-white'
             }`}>
               <Github size={20} />
             </a>
-            <a href="#" className={`transition-colors hover:text-blue-600 ${
+            <a href="https://www.linkedin.com/in/bacem-ben-akkari-8868b2251/" target="_blank" rel="noopener noreferrer" className={`transition-colors hover:text-blue-600 ${
               isScrolled ? 'text-gray-700' : 'text-white'
             }`}>
               <Linkedin size={20} />
@@ -118,10 +120,10 @@ const Header = () => {
               <a href="tel:+21650232389" className="text-gray-600 hover:text-blue-600 transition-colors">
                 <Phone size={20} />
               </a>
-              <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">
+              <a href="https://github.com/bacembenakkari" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600 transition-colors">
                 <Github size={20} />
               </a>
-              <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">
+              <a href="https://www.linkedin.com/in/bacem-ben-akkari-8868b2251/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600 transition-colors">
                 <Linkedin size={20} />
               </a>
             </div>

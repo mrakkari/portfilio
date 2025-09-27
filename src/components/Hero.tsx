@@ -1,5 +1,6 @@
 import React from 'react';
 import { ChevronDown, Download, Mail, MapPin } from 'lucide-react';
+import bacemImg from '../assets/bacem.jpg'
 
 const Hero = () => {
   const scrollToAbout = () => {
@@ -17,8 +18,12 @@ const Hero = () => {
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Profile Image */}
         <div className="mb-8">
-          <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center shadow-2xl">
-            <span className="text-4xl font-bold text-white">BA</span>
+          <div className="w-32 h-32 mx-auto rounded-full overflow-hidden shadow-2xl">
+            <img 
+              src={bacemImg} 
+              alt="Bacem Ben Akkari" 
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
 

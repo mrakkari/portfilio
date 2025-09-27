@@ -11,7 +11,8 @@ const Projects = () => {
       technologies: ["Spring Boot", "Angular", "SQLite", "JUnit", "Mockito", "Git"],
       category: "Full-Stack",
       icon: Globe,
-      color: "blue"
+      color: "blue",
+      githubUrl: "https://github.com/bacembenakkari/Flight-Reservation-System"
     },
     {
       title: "Plateforme de formation de cours",
@@ -21,7 +22,8 @@ const Projects = () => {
       technologies: ["Spring Boot", "JWT", "Spring Data JPA", "MySQL", "ReactJS", "Git"],
       category: "Full-Stack",
       icon: Code,
-      color: "teal"
+      color: "teal",
+      githubUrl: "https://github.com/bacembenakkari/Education-Plateform"
     },
     {
       title: "Plateforme de connexion freelance-client",
@@ -31,7 +33,8 @@ const Projects = () => {
       technologies: ["MongoDB", "Express.js", "React", "Node.js"],
       category: "MERN Stack",
       icon: Database,
-      color: "orange"
+      color: "orange",
+      githubUrl: "https://github.com/yourusername/freelance-client-platform"
     },
     {
       title: "Projet de site e-commerce",
@@ -41,7 +44,8 @@ const Projects = () => {
       technologies: ["Symfony", "Twig", "CSS", "Git"],
       category: "Web",
       icon: Globe,
-      color: "purple"
+      color: "purple",
+      githubUrl: "https://github.com/bacembenakkari/E-commerce-website"
     },
     {
       title: "Système de gestion de location de voitures",
@@ -51,7 +55,8 @@ const Projects = () => {
       technologies: ["HTML", "CSS", "JavaScript", "PHP", "MySQL", "Git"],
       category: "Web",
       icon: Code,
-      color: "green"
+      color: "green",
+      githubUrl: "https://github.com/bacembenakkari/Car-Rental-Management-System"
     },
     {
       title: "Modélisation prédictive pour l'optimisation des semiconducteurs",
@@ -61,7 +66,8 @@ const Projects = () => {
       technologies: ["Python", "Scikit-learn", "TensorFlow", "Pandas", "NumPy", "Git"],
       category: "Machine Learning",
       icon: Database,
-      color: "red"
+      color: "red",
+      githubUrl: "https://github.com/yourusername/semiconductor-optimization"
     }
   ];
 
@@ -145,10 +151,15 @@ const Projects = () => {
 
                   {/* Action Buttons */}
                   <div className="flex space-x-3">
-                    <button className={`flex items-center space-x-2 px-4 py-2 ${colors.bg} text-white rounded-lg hover:opacity-90 transition-opacity text-sm font-medium`}>
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex items-center space-x-2 px-4 py-2 ${colors.bg} text-white rounded-lg hover:opacity-90 transition-opacity text-sm font-medium`}
+                    >
                       <Github size={16} />
                       <span>Code</span>
-                    </button>
+                    </a>
                     <button className={`flex items-center space-x-2 px-4 py-2 border-2 ${colors.border} ${colors.text} rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium`}>
                       <ExternalLink size={16} />
                       <span>Demo</span>
@@ -168,10 +179,15 @@ const Projects = () => {
               Découvrez tous mes projets et contributions sur mon profil GitHub, incluant 
               des expérimentations avec les dernières technologies et des contributions open source.
             </p>
-            <button className="bg-gray-900 text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors inline-flex items-center space-x-2">
+            <a
+              href="https://github.com/bacembenakkari"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gray-900 text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors inline-flex items-center space-x-2"
+            >
               <Github size={20} />
               <span>Voir GitHub</span>
-            </button>
+            </a>
           </div>
         </div>
       </div>
